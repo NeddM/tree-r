@@ -16,29 +16,30 @@ fn main() {
 
 fn iteration(new_dir: &str, mut counter: usize) {
     match fs::read_dir(new_dir) {
-        Ok(_) => {}
-        Err(_) => {
-            println!("Folder not found");
-            println!("Please enter a valid directory");
-            return;
-        }
-    }
+        Ok(_) => {
+            for entry in fs::read_dir(new_dir).unwrap() {
+                match entry {
+                    Ok(entry) => {
+                        let spaces: String = "      ".repeat(counter);
+                        if entry.path().is_dir() {
+                            println!("{}{}", spaces, entry.file_name().to_str().unwrap());
 
-    for entry in fs::read_dir(new_dir).unwrap() {
-        match entry {
-            Ok(entry) => {
-                let spaces: String = "      ".repeat(counter);
-                if entry.path().is_dir() {
-                    println!("{}{}", spaces, entry.file_name().to_str().unwrap());
-
-                    counter += 1;
-                    iteration(entry.path().to_str().unwrap(), counter);
-                    counter -= 1;
-                } else if entry.path().is_file() {
-                    println!("{}{}", spaces, entry.file_name().to_str().unwrap());
+                            counter += 1;
+                            iteration(entry.path().to_str().unwrap(), counter);
+                            counter -= 1;
+                        } else if entry.path().is_file() {
+                            println!("{}{}", spaces, entry.file_name().to_str().unwrap());
+                        }
+                    }
+                    Err(e) => println!("Error code: {}", e),
                 }
             }
-            Err(e) => println!("{}", e),
+        }
+        Err(e) => {
+            println!("Folder not found");
+            println!("Please enter a valid directory");
+            println!("Error code: {}", e);
+            return;
         }
     }
 }
