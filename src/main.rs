@@ -8,16 +8,16 @@ fn main() {
     if args.contains(&"-h".to_string()) {
         print_help();
     } else if args.len() > 1 {
-        iteration(&args[1], counter)
+        treeing(&args[1], counter)
     } else {
-        iteration(".", counter)
+        treeing(".", counter)
     }
 }
 
-fn iteration(new_dir: &str, mut counter: usize) {
+fn treeing(new_dir: &str, mut counter: usize) {
     match fs::read_dir(new_dir) {
-        Ok(_) => {
-            for entry in fs::read_dir(new_dir).unwrap() {
+        Ok(data) => {
+            for entry in data {
                 match entry {
                     Ok(entry) => {
                         let spaces: String = "      ".repeat(counter);
@@ -25,7 +25,7 @@ fn iteration(new_dir: &str, mut counter: usize) {
                             println!("{}{}", spaces, entry.file_name().to_str().unwrap());
 
                             counter += 1;
-                            iteration(entry.path().to_str().unwrap(), counter);
+                            treeing(entry.path().to_str().unwrap(), counter);
                             counter -= 1;
                         } else if entry.path().is_file() {
                             println!("{}{}", spaces, entry.file_name().to_str().unwrap());
