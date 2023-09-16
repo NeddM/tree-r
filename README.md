@@ -26,6 +26,7 @@ cargo build --release
 
 4. Save the exe on `System32` in Windows or `/usr/local/bin/` in Linux.
 
+
 5. Run the compiled executable:
 
 ```shell
